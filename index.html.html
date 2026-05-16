@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Glossar – Peisler PeiMedia GmbH</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary:   #0E2169;
+    --primary-dk:#091650;
+    --gold:      #BA8C00;
+    --gold-lt:   #d4a800;
+    --cream:     #FFF2CC;
+    --bg:        #f4f5f9;
+    --card:      #ffffff;
+    --text:      #1a1a2e;
+    --muted:     #6b7280;
+    --border:    #dde0ee;
+    --radius:    14px;
+    --shadow:    0 4px 28px rgba(14,33,105,0.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: var(--primary); color: #fff; position: relative; overflow: hidden; }
+  .header-accent-top { height: 5px; background: linear-gradient(90deg, var(--gold) 0%, #e8c84a 50%, var(--gold) 100%); }
+  header::before { content:''; position:absolute; top:-90px; right:-90px; width:340px; height:340px; border-radius:50%; background:rgba(186,140,0,0.09); pointer-events:none; }
+  header::after  { content:''; position:absolute; bottom:-70px; left:-50px; width:240px; height:240px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none; }
+  .header-inner { padding:2.2rem 2rem 2.5rem; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; z-index:1; }
+
+  .logo-block { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.5rem; background:rgba(255,255,255,0.07); border:1px solid rgba(186,140,0,0.35); border-radius:10px; padding:0.6rem 1.3rem; }
+  .logo-squares { display:grid; grid-template-columns:1fr 1fr; gap:3px; flex-shrink:0; }
+  .sq { width:11px; height:11px; border-radius:2px; }
+  .sq.gold { background:var(--gold); }
+  .sq.blue { background:rgba(255,255,255,0.22); }
+  .logo-name { font-family:'Barlow',sans-serif; font-weight:800; font-size:1.05rem; letter-spacing:0.03em; color:#fff; line-height:1.15; }
+  .logo-name span { color:var(--gold-lt); }
+  .logo-sub { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.5); font-weight:300; margin-top:1px; }
+
+  header h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.1; margin-bottom:0.45rem; }
+  header h1 span { color:var(--gold-lt); }
+  .header-tagline { font-size:0.98rem; color:rgba(255,255,255,0.65); font-weight:300; letter-spacing:0.03em; font-style:italic; margin-bottom:1.1rem; }
+  .header-badges { display:flex; gap:0.45rem; flex-wrap:wrap; justify-content:center; }
+  .badge { display:inline-block; background:rgba(186,140,0,0.18); color:#e8c84a; border:1px solid rgba(186,140,0,0.38); border-radius:99px; font-size:0.74rem; padding:0.22rem 0.85rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
+
+  /* CONTROLS */
+  .controls { background:var(--card); border-bottom:1px solid var(--border); padding:1.1rem 2rem; display:flex; flex-direction:column; gap:0.75rem; position:sticky; top:0; z-index:100; box-shadow:0 2px 16px rgba(14,33,105,0.09); }
+  .search-wrap { position:relative; }
+  .search-wrap svg { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+  #search { width:100%; padding:0.72rem 1rem 0.72rem 2.8rem; border:2px solid var(--border); border-radius:99px; font-family:'Barlow',sans-serif; font-size:0.96rem; background:var(--bg); color:var(--text); transition:border-color 0.2s; outline:none; }
+  #search:focus { border-color:var(--primary); }
+  #search::placeholder { color:var(--muted); }
+  .tabs { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+  .tab-label { font-size:0.74rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-right:0.3rem; }
+  .tab { padding:0.35rem 1.05rem; border-radius:99px; border:2px solid var(--border); background:transparent; color:var(--muted); font-family:'Barlow',sans-serif; font-size:0.87rem; cursor:pointer; transition:all 0.18s; font-weight:700; }
+  .tab:hover { border-color:var(--primary); color:var(--primary); }
+  .tab.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+
+  /* ALPHA BAR */
+  .alpha-bar { display:flex; flex-wrap:wrap; gap:0.25rem; padding:0.65rem 2rem; background:var(--bg); border-bottom:1px solid var(--border); }
+  .alpha-bar.hidden { display:none; }
+  .alpha-btn { width:30px; height:30px; border-radius:7px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:0.79rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; font-family:'Barlow',sans-serif; }
+  .alpha-btn:hover,.alpha-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+  /* CAT FILTER */
+  .cat-filter { display:flex; flex-wrap:wrap; gap:0.4rem; padding:0.75rem 2rem; background:var(--bg); border-bottom:1px solid var(--border); }
+  .cat-filter.hidden { display:none; }
+  .cat-btn { padding:0.32rem 0.95rem; border-radius:99px; border:2px solid var(--border); background:var(--card); color:var(--muted); font-family:'Barlow',sans-serif; font-size:0.83rem; font-weight:700; cursor:pointer; transition:all 0.15s; }
+  .cat-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .cat-btn.active { background:var(--gold); border-color:var(--gold); color:#fff; }
+
+  /* MAIN */
+  main { max-width:960px; margin:0 auto; padding:2rem 1.5rem 5rem; }
+  .stats-bar { display:flex; gap:1.5rem; align-items:center; margin-bottom:0.75rem; font-size:0.86rem; color:var(--muted); flex-wrap:wrap; }
+  .stats-bar strong { color:var(--primary); }
+
+  .section-header { font-family:'Playfair Display',serif; font-size:1.45rem; color:var(--primary); margin:2.2rem 0 1rem; padding-bottom:0.5rem; border-bottom:3px solid var(--gold); display:flex; align-items:baseline; gap:0.5rem; }
+  .section-header .letter { font-size:2rem; color:var(--gold); line-height:1; }
+  .section-count { font-size:0.85rem; color:var(--muted); font-family:'Barlow',sans-serif; font-weight:400; }
+
+  /* CARD */
+  .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:1rem; overflow:hidden; transition:box-shadow 0.22s, transform 0.22s; }
+  .card:hover { box-shadow:0 8px 36px rgba(14,33,105,0.16); transform:translateY(-2px); }
+  .card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.3rem 0.7rem; cursor:pointer; gap:0.75rem; }
+  .card-left { display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; flex:1; }
+  .card-title { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--primary); font-weight:700; }
+  .card-en { font-size:0.8rem; color:var(--muted); font-style:italic; }
+  .cat-tag { font-size:0.69rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; padding:0.18rem 0.65rem; border-radius:99px; white-space:nowrap; }
+  .toggle-btn { background:none; border:none; cursor:pointer; color:var(--muted); flex-shrink:0; transition:transform 0.25s; display:flex; align-items:center; }
+  .toggle-btn.open { transform:rotate(180deg); }
+  .card-preview { padding:0 1.3rem 0.9rem; font-size:0.91rem; color:var(--muted); font-style:italic; line-height:1.55; }
+  .card-body { display:none; padding:0 1.3rem 1.3rem; border-top:1px solid var(--border); }
+  .card-body.open { display:block; }
+  .def-block { margin-top:0.95rem; }
+  .def-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--primary); margin-bottom:0.35rem; }
+  .def-text { font-size:0.95rem; line-height:1.72; color:var(--text); }
+  .example-box { margin-top:0.9rem; background:var(--cream); border-left:4px solid var(--gold); border-radius:0 10px 10px 0; padding:0.8rem 1.05rem; }
+  .example-box .def-label { color:var(--gold); }
+  .example-box .def-text { font-size:0.92rem; }
+
+  /* EMPTY */
+  .empty { text-align:center; padding:4rem 2rem; color:var(--muted); }
+  .empty svg { margin-bottom:1rem; opacity:0.35; }
+  .empty h3 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:0.5rem; color:var(--primary); }
+
+  /* FOOTER */
+  footer { background:var(--primary); color:rgba(255,255,255,0.7); text-align:center; padding:2.5rem 1.5rem; font-size:0.83rem; line-height:1.9; }
+  .footer-accent { height:4px; background:linear-gradient(90deg, var(--gold) 0%, #e8c84a 50%, var(--gold) 100%); margin:-2.5rem -1.5rem 2rem; }
+  footer strong { color:#fff; font-size:1rem; }
+  footer a { color:var(--gold-lt); text-decoration:none; border-bottom:1px solid rgba(186,140,0,0.35); transition:border-color 0.2s; }
+  footer a:hover { border-color:var(--gold-lt); }
+  .footer-contact { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin:0.8rem 0 1.2rem; font-size:0.88rem; }
+  .footer-contact span { display:flex; align-items:center; gap:0.4rem; color:rgba(255,255,255,0.8); }
+  .disclaimer-box { max-width:720px; margin:1rem auto 0; background:rgba(255,255,255,0.05); border:1px solid rgba(186,140,0,0.22); border-radius:10px; padding:1.1rem 1.3rem; font-size:0.77rem; color:rgba(255,255,255,0.5); text-align:left; line-height:1.7; }
+  .disclaimer-box strong { color:rgba(255,255,255,0.75); font-size:0.77rem; }
+
+  @media (max-width:600px) {
+    .controls { padding:1rem; }
+    .alpha-bar,.cat-filter { padding:0.5rem 1rem; }
+    main { padding:1.2rem 1rem 3.5rem; }
+    .card-header { padding:0.9rem 1rem 0.6rem; }
+    .card-preview { padding:0 1rem 0.75rem; }
+    .card-body { padding:0 1rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-accent-top"></div>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-squares">
+        <div class="sq gold"></div><div class="sq blue"></div>
+        <div class="sq blue"></div><div class="sq gold"></div>
+      </div>
+      <div>
+        <div class="logo-name"><span>Peisler</span> PeiMedia</div>
+        <div class="logo-sub">GmbH</div>
+      </div>
+    </div>
+    <h1>KI-<span>Glossar</span></h1>
+    <p class="header-tagline">„Investiere in das, was wirklich zählt. IN DICH!"</p>
+    <div class="header-badges">
+      <span class="badge">97 Begriffe</span>
+      <span class="badge">Deutsch · A2–B1</span>
+      <span class="badge">Stand 2026</span>
+      <span class="badge">Interaktiv</span>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search" type="search" placeholder="Begriff suchen – z. B. KI, Prompt, Deepfake …" autocomplete="off"/>
+  </div>
+  <div class="tabs">
+    <span class="tab-label">Ansicht:</span>
+    <button class="tab active" data-view="alpha">🔤 Alphabetisch</button>
+    <button class="tab" data-view="cat">🗂 Nach Kategorie</button>
+  </div>
+</div>
+
+<div class="alpha-bar" id="alphaBar"></div>
+<div class="cat-filter hidden" id="catFilter"></div>
+
+<main>
+  <div class="stats-bar">
+    <span>Gefundene Begriffe: <strong id="countDisplay">–</strong></span>
+    <span id="activeFilterLabel" style="color:var(--gold);font-weight:700;"></span>
+  </div>
+  <div id="glossaryOutput"></div>
+</main>
+
+<footer>
+  <div class="footer-accent"></div>
+  <strong>Peisler PeiMedia GmbH</strong><br>
+  <div class="footer-contact">
+    <span>📞 <a href="tel:+4917778187 89">+49 177 781 87 89</a></span>
+    <span>✉️ <a href="mailto:info@peimedia-bw.de">info@peimedia-bw.de</a></span>
+  </div>
+  © 2026 Peisler PeiMedia GmbH · Alle Rechte vorbehalten.
+  <div class="disclaimer-box">
+    <strong>⚖️ Haftungsausschluss:</strong> Dieses Glossar dient ausschließlich zu Informations- und Bildungszwecken.
+    Die Erklärungen sind vereinfacht und erheben keinen Anspruch auf Vollständigkeit oder rechtliche Verbindlichkeit.
+    Technologien im Bereich der Künstlichen Intelligenz entwickeln sich sehr schnell – Angaben können veralten.
+    Peisler PeiMedia GmbH übernimmt keine Haftung für Entscheidungen, die auf Basis der hier enthaltenen Informationen getroffen werden.
+    Für verbindliche oder rechtlich relevante Auskünfte wenden Sie sich bitte an entsprechende Fachpersonen.
+    Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für externe Inhalte.
+  </div>
+</footer>
+
+<script>
+const TERMS = [
+  { id:1,  de:"Algorithmus",                   en:"Algorithm",               cat:"Grundlagen",
+    short:"Eine genaue Schritt-für-Schritt-Anleitung für einen Computer.",
+    def:"Ein Algorithmus ist wie ein Kochrezept: Er beschreibt genau, welche Schritte ein Computer in welcher Reihenfolge ausführen soll, um ein Problem zu lösen. Alle Computerprogramme bestehen aus Algorithmen.",
+    example:"🗺️ Wenn Sie in Google Maps eine Route suchen, berechnet ein Algorithmus im Hintergrund den schnellsten Weg für Sie." },
+
+  { id:2,  de:"Automatisierung",                en:"Automation",              cat:"Anwendungen",
+    short:"Aufgaben werden ohne Menschen erledigt – von Maschinen oder KI.",
+    def:"Automatisierung bedeutet: Aufgaben, die früher Menschen erledigten, werden jetzt von Maschinen oder KI-Programmen übernommen. KI-gestützte Automatisierung kann auch komplexe Aufgaben übernehmen – nicht nur einfache Routinen.",
+    example:"🏦 Statt einen Bankberater anzurufen, prüft ein KI-System automatisch, ob Ihr Kredit genehmigt wird – in Sekunden, rund um die Uhr." },
+
+  { id:3,  de:"Autonome Systeme",               en:"Autonomous Systems",      cat:"Technologien",
+    short:"Systeme, die selbständig handeln – ohne dass ein Mensch eingreift.",
+    def:"Autonome Systeme nehmen Informationen auf, treffen Entscheidungen und handeln selbst – zum Beispiel ein selbstfahrendes Auto oder eine Drohne. Je mehr Autonomie, desto wichtiger sind Sicherheit und ethische Regeln.",
+    example:"✈️ Flugzeuge können viele Stunden autonom fliegen (Autopilot). Menschen überwachen den Flug – aber das System agiert selbständig." },
+
+  { id:4,  de:"Bias (Voreingenommenheit)",       en:"Bias",                    cat:"Risiken & Ethik",
+    short:"Wenn KI bestimmte Gruppen bevorzugt oder benachteiligt.",
+    def:"Bias bei KI entsteht, wenn die Trainingsdaten unvollständig oder ungerecht sind. Das System übernimmt diese Ungleichheit und behandelt bestimmte Menschen oder Gruppen unfair – ohne dass es jemand absichtlich so programmiert hat.",
+    example:"⚖️ Eine KI prüft Bewerbungen und sortiert Frauen häufiger aus – nicht weil sie schlechter sind, sondern weil die Lerndaten ein ungerechtes Bild der Vergangenheit widerspiegeln." },
+
+  { id:5,  de:"Black Box",                      en:"Black Box",               cat:"Technologien",
+    short:"Man sieht, was reingeht und was rauskommt – aber nicht, wie die KI entscheidet.",
+    def:"Viele KI-Systeme sind 'Black Boxes': Man gibt Daten ein und bekommt ein Ergebnis. Wie genau die KI zur Entscheidung kam, ist unklar. Das ist ein Problem bei wichtigen Entscheidungen, weil man Fehler nicht leicht erkennen kann.",
+    example:"📦 Die Bank lehnt Ihren Kredit ab. Warum? Das weiß niemand genau – die KI hat entschieden, aber nicht erklärt. Das ist eine Black Box." },
+
+  { id:6,  de:"Chatbot",                        en:"Chatbot",                 cat:"Anwendungen",
+    short:"Ein Computerprogramm, mit dem man schreiben oder sprechen kann.",
+    def:"Ein Chatbot ist ein Programm, das automatisch auf Nachrichten antwortet. Einfache Chatbots folgen festen Regeln. Moderne KI-Chatbots (wie ChatGPT) verstehen natürliche Sprache und können flexibel auf neue Fragen eingehen.",
+    example:"🛒 Sie klicken auf 'Hilfe' auf einer Website und ein Fenster öffnet sich. Ein Bot beantwortet Ihre Fragen automatisch – das ist ein Chatbot." },
+
+  { id:7,  de:"ChatGPT",                        en:"ChatGPT",                 cat:"Werkzeuge & Produkte",
+    short:"Ein bekannter KI-Chatbot von der Firma OpenAI.",
+    def:"ChatGPT ist ein KI-Programm, mit dem man auf Deutsch, Englisch und vielen anderen Sprachen chatten kann. Es beantwortet Fragen, schreibt Texte, fasst zusammen und übersetzt. Es nutzt LLM-Technologie (GPT-4 und neuere Modelle).",
+    example:"💡 Sie fragen ChatGPT: 'Erkläre mir KI wie einem 10-Jährigen' – und erhalten sofort eine einfache, verständliche Antwort." },
+
+  { id:8,  de:"Computer Vision",                en:"Computer Vision",         cat:"Technologien",
+    short:"KI, die Bilder und Videos sehen und verstehen kann.",
+    def:"Computer Vision ermöglicht es Computern, Bilder und Videos zu analysieren. Sie erkennt Objekte, Personen, Text oder Gesten. Sie wird in Kameras, selbstfahrenden Autos und medizinischen Geräten eingesetzt.",
+    example:"🚗 Ein selbstfahrendes Auto 'sieht' mit Kameras die Straße, andere Autos und Fußgänger – und reagiert in Echtzeit darauf. Das ist Computer Vision." },
+
+  { id:9,  de:"Datenschutz (DSGVO)",             en:"Data Protection (GDPR)", cat:"Recht & Regulierung",
+    short:"Ihre persönlichen Daten werden in Europa durch Gesetze geschützt.",
+    def:"Die DSGVO (Datenschutz-Grundverordnung) ist ein europäisches Gesetz. Es schreibt vor, wie Firmen persönliche Daten sammeln, speichern und nutzen dürfen. Auch KI-Systeme müssen diese Regeln einhalten.",
+    example:"✉️ Wenn Sie sich für einen Newsletter anmelden, müssen Sie aktiv zustimmen. Das Unternehmen darf Ihre E-Mail nicht einfach weitergeben. Das ist DSGVO in der Praxis." },
+
+  { id:10, de:"Datenethik",                     en:"Data Ethics",             cat:"Risiken & Ethik",
+    short:"Die Frage: Wie verwenden wir Daten verantwortungsvoll?",
+    def:"Datenethik fragt: Ist es richtig, diese Daten zu sammeln? Wem gehören sie? Werden Menschen geschützt? Diese Fragen sind wichtig, weil KI sehr viele persönliche Daten braucht.",
+    example:"📱 Ihr Smartphone sammelt Standortdaten. Datenethik fragt: Wer nutzt diese Daten? Wofür? Und haben Sie wirklich zugestimmt?" },
+
+  { id:11, de:"Deep Learning (Tiefes Lernen)",   en:"Deep Learning",          cat:"Grundlagen",
+    short:"Eine besonders leistungsstarke Form des maschinellen Lernens.",
+    def:"Deep Learning nutzt viele Schichten von Recheneinheiten – ähnlich wie unser Gehirn mit Nervenzellen arbeitet. Diese Technik ist sehr gut bei Bildern, Sprache und Texten, braucht aber sehr viele Daten und viel Rechenleistung.",
+    example:"📸 Wenn Sie ein Foto machen und Ihr Handy automatisch Personen erkennt, arbeitet Deep Learning im Hintergrund." },
+
+  { id:12, de:"Deepfake",                       en:"Deepfake",                cat:"Risiken & Ethik",
+    short:"KI-erstellte Fotos oder Videos, die echte Personen zeigen – aber gefälscht sind.",
+    def:"Deepfakes sind Bilder, Videos oder Audioaufnahmen, die von KI erstellt oder verändert wurden. Sie zeigen echte Menschen in Situationen, die nie passiert sind. Sie können sehr realistisch aussehen und gefährlich für die Verbreitung von Falschinformationen sein.",
+    example:"🎬 Sie sehen ein Video, in dem ein Politiker etwas sagt – aber das Video ist gefälscht. KI hat Gesicht und Stimme täuschend echt imitiert. Das ist ein Deepfake." },
+
+  { id:13, de:"Digitaler Zwilling",             en:"Digital Twin",            cat:"Anwendungen",
+    short:"Eine digitale Kopie eines echten Objekts oder Systems.",
+    def:"Ein digitaler Zwilling ist ein virtuelles Modell eines realen Dings – zum Beispiel einer Maschine, einer Fabrik oder sogar einer Stadt. Mit KI kann man Szenarien testen, ohne das echte Objekt zu riskieren.",
+    example:"🏭 Ein Autohersteller simuliert, wie eine neue Fabrik funktioniert, bevor er sie baut. Fehler werden im Digitalen gefunden und behoben – nicht in der teuren Realität." },
+
+  { id:14, de:"Embedding (Vektoreinbettung)",   en:"Embedding",              cat:"Technologien",
+    short:"Sprache oder Bilder werden in Zahlen umgewandelt, die ein Computer versteht.",
+    def:"Computer verstehen keine Wörter direkt. Embeddings wandeln Wörter, Sätze oder Bilder in Zahlenreihen um. Ähnliche Inhalte bekommen ähnliche Zahlen. So kann eine KI semantische Ähnlichkeit erkennen.",
+    example:"📐 Die Wörter 'König' und 'Königin' haben ähnliche Zahlen in ihrer Einbettung. Die KI 'weiß', dass sie sich ähneln – ohne Sprache wirklich zu verstehen." },
+
+  { id:15, de:"Empfehlungssystem",              en:"Recommendation System",  cat:"Anwendungen",
+    short:"KI schlägt vor, was Sie als nächstes ansehen, kaufen oder hören sollen.",
+    def:"Empfehlungssysteme analysieren Ihr bisheriges Verhalten und schlagen passende Inhalte vor. Sie kennen das von Netflix, Spotify oder Amazon. Die KI lernt Ihre Vorlieben und versucht, Ihnen das Richtige zu zeigen.",
+    example:"🎵 Spotify spielt einen Song, den Sie noch nicht kennen – aber er passt perfekt zu Ihrem Geschmack. Das ist ein Empfehlungssystem." },
+
+  { id:16, de:"EU AI Act",                      en:"EU AI Act",              cat:"Recht & Regulierung",
+    short:"Das erste große Gesetz der EU zur Regulierung von Künstlicher Intelligenz.",
+    def:"Der EU AI Act teilt KI-Systeme in Risikostufen ein: unakzeptables Risiko (verboten), hohes Risiko (strenge Regeln), geringes Risiko (wenig Regeln). Ziel ist es, KI in Europa sicher und vertrauenswürdig zu machen.",
+    example:"🏛️ Ein KI-System, das Menschen im öffentlichen Raum überwacht, ist in Europa verboten. Eine KI, die bei Kreditentscheidungen hilft, unterliegt strengen Regeln und Prüfpflichten." },
+
+  { id:17, de:"Fine-Tuning",                    en:"Fine-Tuning",            cat:"Technologien",
+    short:"Ein allgemeines KI-Modell wird für eine bestimmte Aufgabe weiter trainiert.",
+    def:"Fine-Tuning bedeutet: Man nimmt ein großes, bereits trainiertes Modell und trainiert es mit spezifischen Daten weiter. So wird es besser bei einer bestimmten Aufgabe – zum Beispiel bei medizinischen Texten oder Rechtsberatung.",
+    example:"👨‍⚕️ Ein allgemeines Sprachmodell wird mit Tausenden Arztberichten weitertrainiert – danach ist es besonders gut darin, medizinische Fragen zu beantworten." },
+
+  { id:18, de:"Foundation Model",               en:"Foundation Model",       cat:"Modelle & Systeme",
+    short:"Ein sehr großes, vielseitiges KI-Modell als Basis für viele Aufgaben.",
+    def:"Foundation Models sind riesige KI-Modelle, die auf enormen Datenmengen trainiert wurden. Sie können für viele verschiedene Aufgaben genutzt oder weiterentwickelt werden. GPT-4, Gemini oder Claude sind bekannte Beispiele.",
+    example:"🏗️ Wie der Rohbau eines Hauses: Das Foundation Model ist das Fundament – darauf baut man spezifische Anwendungen für Medizin, Recht oder Bildung." },
+
+  { id:19, de:"Garbage In, Garbage Out (GIGO)", en:"Garbage In, Garbage Out", cat:"Risiken & Ethik",
+    short:"Schlechte Eingaben führen zu schlechten Ergebnissen.",
+    def:"Dieser Grundsatz gilt für alle KI-Systeme: Wenn man schlechte, falsche oder unvollständige Daten eingibt, bekommt man schlechte Ergebnisse zurück. Eine KI ist nur so gut wie ihre Trainingsdaten und Eingaben.",
+    example:"🗑️ Wie beim Kochen: Wenn Sie schlechte Zutaten verwenden, wird das Gericht schlecht – egal wie gut der Koch ist." },
+
+  { id:20, de:"Generative KI (GenAI)",          en:"Generative AI",          cat:"Modelle & Systeme",
+    short:"KI, die neue Inhalte erstellt – Texte, Bilder, Videos oder Musik.",
+    def:"Generative KI erschafft auf Befehl neue Inhalte. Sie erzeugt nichts aus dem Nichts, sondern nutzt Muster aus ihren Trainingsdaten. Bekannte Beispiele: ChatGPT (Text), DALL·E (Bilder), Suno (Musik).",
+    example:"🎨 Sie beschreiben ein Bild: 'Ein Hund surft auf einer Wolke bei Sonnenuntergang' – und GenAI erstellt es innerhalb von Sekunden." },
+
+  { id:21, de:"Großes Sprachmodell (LLM)",      en:"Large Language Model",   cat:"Modelle & Systeme",
+    short:"Ein KI-System, das sehr gut mit Sprache umgehen kann.",
+    def:"Ein LLM ist ein sehr großes KI-Programm, das mit riesigen Mengen Text trainiert wurde – Bücher, Webseiten, Artikel. Es kann Texte verstehen und selbst schreiben. Bekannte Beispiele: GPT-4 (OpenAI), Gemini (Google), Claude (Anthropic).",
+    example:"💬 Wenn Sie ChatGPT fragen 'Erkläre mir Quantenphysik einfach' und er eine verständliche Antwort schreibt – das ist ein LLM bei der Arbeit." },
+
+  { id:22, de:"Halluzination (KI)",             en:"Hallucination (AI)",     cat:"Risiken & Ethik",
+    short:"Wenn KI falsche Informationen erfindet und sie als wahr darstellt.",
+    def:"KI-Systeme, besonders LLMs, erfinden manchmal Antworten, die falsch sind – aber überzeugend klingen. Das nennt man Halluzination. Die KI lügt nicht absichtlich: Sie generiert statistische Wahrscheinlichkeiten, keine geprüften Fakten.",
+    example:"📚 Sie fragen eine KI: 'Wer schrieb das Buch XY?' – die KI nennt einen falschen Autor, aber sehr selbstsicher. Deshalb: KI-Antworten immer prüfen!" },
+
+  { id:23, de:"KI-Regulierung",                 en:"AI Regulation",          cat:"Recht & Regulierung",
+    short:"Gesetze und Regeln, die den Einsatz von KI kontrollieren.",
+    def:"Da KI immer mächtiger wird, arbeiten Regierungen weltweit an Gesetzen. Ziel: Risiken minimieren, Rechte schützen, Innovation fördern. Der EU AI Act ist das wichtigste Beispiel in Europa.",
+    example:"⚖️ Wie Straßenverkehrsregeln für Autos – KI-Regulierung setzt Grenzen, damit KI sicher und fair eingesetzt wird." },
+
+  { id:24, de:"Künstliche Intelligenz (KI)",    en:"Artificial Intelligence", cat:"Grundlagen",
+    short:"Computer, die Aufgaben ausführen, die normalerweise menschliche Intelligenz erfordern.",
+    def:"Künstliche Intelligenz bedeutet: Ein Computer erledigt Aufgaben, die sonst nur Menschen können – zum Beispiel Sprache verstehen, Bilder erkennen oder Entscheidungen treffen. KI ist kein echtes Gehirn – sie folgt Mustern aus sehr vielen Daten.",
+    example:"🏠 Ihr Smartphone erkennt Ihr Gesicht zum Entsperren. Ihr E-Mail-Programm filtert Spam automatisch. Beides ist KI in Ihrem Alltag." },
+
+  { id:25, de:"Maschinelles Lernen (ML)",       en:"Machine Learning",       cat:"Grundlagen",
+    short:"Computer lernen aus Erfahrungen, ohne direkt programmiert zu werden.",
+    def:"Beim maschinellen Lernen zeigt man einem Computer viele Beispiele. Der Computer findet selbst Muster in diesen Beispielen. So lernt er, neue Fälle richtig zu beantworten – ohne dass jemand alle Regeln einzeln eingegeben hat.",
+    example:"📧 Ihr E-Mail-Programm erkennt Werbemails automatisch. Es hat aus Tausenden Beispielen gelernt, was Spam ist – und wird mit der Zeit immer besser." },
+
+  { id:26, de:"Maschinelle Übersetzung",        en:"Machine Translation",    cat:"Anwendungen",
+    short:"Computer übersetzen Text automatisch von einer Sprache in eine andere.",
+    def:"Maschinelle Übersetzung nutzt KI, um Texte zwischen Sprachen zu übersetzen. Moderne Systeme wie DeepL oder Google Translate arbeiten sehr gut – bei Nuancen, Humor oder Fachbegriffen machen sie aber noch Fehler.",
+    example:"🌍 Sie bekommen eine E-Mail auf Koreanisch. DeepL übersetzt sie in Sekunden ins Deutsche. Das ist maschinelle Übersetzung." },
+
+  { id:27, de:"Multimodal",                     en:"Multimodal",             cat:"Modelle & Systeme",
+    short:"KI, die nicht nur Text, sondern auch Bilder, Audio und Video versteht.",
+    def:"Multimodale KI-Systeme können mehrere Arten von Daten gleichzeitig verarbeiten: Text, Bilder, Ton und Video. Sie kombinieren diese Informationen, um bessere Antworten zu liefern.",
+    example:"📷 Sie zeigen ChatGPT ein Foto von einem Gericht und fragen: 'Was ist das und wie koche ich es?' – Das ist multimodale KI." },
+
+  { id:28, de:"Natürliche Sprachverarbeitung (NLP)", en:"Natural Language Processing", cat:"Technologien",
+    short:"KI versteht und verarbeitet menschliche Sprache.",
+    def:"NLP ist der Bereich der KI, der sich mit menschlicher Sprache beschäftigt. Damit kann ein Computer Texte lesen, verstehen, übersetzen oder zusammenfassen. NLP steckt in Übersetzungsprogrammen, Sprachassistenten und Chatbots.",
+    example:"🗣️ Google Translate übersetzt einen deutschen Satz ins Japanische – das ist NLP in Aktion." },
+
+  { id:29, de:"Neuronale Netze",                en:"Neural Networks",        cat:"Grundlagen",
+    short:"Computerprogramme, die dem menschlichen Gehirn nachempfunden sind.",
+    def:"Neuronale Netze bestehen aus vielen kleinen Recheneinheiten, die man 'Neuronen' nennt. Sie sind miteinander verbunden und geben Informationen weiter – ähnlich wie Nervenzellen im Gehirn. Je mehr Schichten, desto 'tiefer' das Netz.",
+    example:"🧠 Wie das Gehirn beim Lesen lernt – zuerst Buchstaben, dann Wörter, dann Sätze: So arbeiten neuronale Netze, Schicht für Schicht." },
+
+  { id:30, de:"NotebookLM",                     en:"NotebookLM",             cat:"Werkzeuge & Produkte",
+    short:"Ein KI-Werkzeug von Google, das Ihre eigenen Dokumente analysiert.",
+    def:"NotebookLM ist ein KI-Tool von Google. Sie laden eigene Dokumente hoch (PDFs, Texte etc.) und die KI beantwortet Fragen dazu. Im Gegensatz zu anderen Chatbots greift NotebookLM nur auf Ihre Dokumente zurück – nicht auf das gesamte Internet.",
+    example:"📄 Sie laden Ihre 50-seitige Schulungsunterlage hoch und fragen: 'Was sind die drei wichtigsten Punkte?' – NotebookLM fasst sie präzise zusammen." },
+
+  { id:31, de:"Overfitting",                    en:"Overfitting",            cat:"Technologien",
+    short:"Eine KI lernt die Trainingsdaten auswendig – kann aber neue Fälle nicht lösen.",
+    def:"Overfitting passiert, wenn ein KI-Modell zu sehr auf die Lerndaten spezialisiert ist. Es kennt diese Beispiele perfekt – aber bei neuen, unbekannten Fällen versagt es. Es hat 'auswendig gelernt' statt wirklich zu verstehen.",
+    example:"📝 Ein Schüler lernt alle alten Prüfungsaufgaben auswendig. Bei der echten Prüfung mit neuen Aufgaben scheitert er. Genau das ist Overfitting." },
+
+  { id:32, de:"Prompt",                         en:"Prompt",                 cat:"Anwendungen",
+    short:"Die Eingabe oder Frage, die Sie an eine KI schicken.",
+    def:"Ein Prompt ist die Anweisung oder Frage, die Sie einer KI geben. Je klarer und genauer Ihr Prompt ist, desto besser ist die Antwort der KI. Prompt Engineering bedeutet: lernen, gute Prompts zu formulieren.",
+    example:"✍️ Statt 'Schreib einen Text' ist ein besserer Prompt: 'Schreibe einen kurzen, freundlichen E-Mail-Text auf Deutsch, um eine Besprechung für Dienstag 14 Uhr zu bestätigen.'" },
+
+  { id:33, de:"Prompt Engineering",             en:"Prompt Engineering",     cat:"Anwendungen",
+    short:"Die Kunst, gute Anweisungen für KI zu formulieren.",
+    def:"Prompt Engineering heißt: Man denkt genau darüber nach, wie man eine KI befragt oder beauftragt. Mit guten Prompts bekommt man viel bessere Ergebnisse. Es ist eine Fähigkeit, die heute immer wichtiger wird.",
+    example:"👨‍🍳 Ein Prompt ist wie ein Rezept für die KI – je präziser die Anleitung, desto besser das Ergebnis. Ein guter Prompt nennt Kontext, Ziel, Stil und Format." },
+
+  { id:34, de:"Reinforcement Learning",         en:"Reinforcement Learning", cat:"Technologien",
+    short:"KI lernt durch Versuch und Irrtum – mit Belohnungen für richtige Entscheidungen.",
+    def:"Beim Reinforcement Learning probiert eine KI verschiedene Aktionen aus. Richtige Entscheidungen werden belohnt, falsche bestraft. So lernt sie schrittweise, was in welcher Situation am besten funktioniert.",
+    example:"🎮 Wie ein Kind, das ein Computerspiel lernt: Es probiert verschiedene Strategien – was funktioniert, macht es öfter. Was nicht klappt, lässt es weg." },
+
+  { id:35, de:"Robotik",                        en:"Robotics",               cat:"Anwendungen",
+    short:"Maschinen, die sich bewegen und Aufgaben in der physischen Welt erledigen.",
+    def:"Robotik verbindet Mechanik, Elektronik und KI. Roboter können Aufgaben in der Realität ausführen – in Fabriken, Krankenhäusern oder im Haushalt. Moderne Roboter nutzen KI, um ihre Umgebung zu verstehen und selbständig zu entscheiden.",
+    example:"🏭 In Autofabriken schweißen Roboter Autoteile zusammen – präziser und schneller als Menschen. Neuere Modelle können sogar unbekannte Objekte greifen und sortieren." },
+
+  { id:36, de:"Sprachassistent",                en:"Voice Assistant",        cat:"Anwendungen",
+    short:"Ein Programm, das auf Sprachbefehle reagiert.",
+    def:"Sprachassistenten wie Siri, Alexa oder Google Assistant hören auf Ihre Stimme und führen Aufgaben aus oder beantworten Fragen. Sie nutzen NLP und KI, um gesprochene Sprache zu verstehen und sinnvoll zu reagieren.",
+    example:"🗣️ 'Hey Siri, erinnere mich morgen früh um 8 Uhr an das Meeting.' – Siri versteht Ihren Befehl und setzt automatisch eine Erinnerung." },
+
+  { id:37, de:"Token",                          en:"Token",                  cat:"Technologien",
+    short:"Die kleinste Einheit, mit der ein Sprachmodell Text verarbeitet.",
+    def:"LLMs lesen Text nicht Buchstabe für Buchstabe, sondern in kleinen Einheiten – den Tokens. Ein Token ist etwa ein Wort oder ein Wortteil. Das Modell berechnet, welches Token wahrscheinlich als nächstes kommt.",
+    example:"🔡 Das Wort 'Künstliche' könnte als zwei Tokens gespeichert werden: 'Künst' + 'liche'. Je mehr Tokens, desto mehr Rechenleistung – und desto höher die Kosten." },
+
+  { id:38, de:"Trainingsdaten",                 en:"Training Data",          cat:"Technologien",
+    short:"Die Daten, aus denen eine KI lernt.",
+    def:"KI-Systeme lernen aus riesigen Mengen an Beispieldaten – das sind die Trainingsdaten. Texte, Bilder, Videos oder Zahlen können Trainingsdaten sein. Die Qualität der KI hängt stark von der Qualität dieser Daten ab.",
+    example:"📖 Damit ein Kind Lesen lernt, braucht es viele Bücher. Damit eine KI Sprache lernt, braucht sie Milliarden von Texten – das sind die Trainingsdaten." },
+
+  { id:39, de:"Transparenz (KI)",               en:"Transparency (AI)",      cat:"Risiken & Ethik",
+    short:"Man kann verstehen, wie eine KI zu ihrer Entscheidung kommt.",
+    def:"Transparenz bedeutet: Es ist nachvollziehbar, warum eine KI so entschieden hat. Das ist wichtig bei Entscheidungen, die Menschen direkt betreffen – zum Beispiel bei der Kreditvergabe oder bei Jobbewerbungen.",
+    example:"🔍 Die Bank lehnt Ihren Kredit ab. Transparenz bedeutet: Sie erfahren, warum – z. B. 'zu hohes Risiko aufgrund der Zahlungshistorie'. Ohne Erklärung wäre es eine Black Box." },
+
+  { id:40, de:"Verantwortungsvolle KI",         en:"Responsible AI",         cat:"Risiken & Ethik",
+    short:"KI wird so entwickelt und eingesetzt, dass sie fair, sicher und ethisch ist.",
+    def:"Verantwortungsvolle KI bedeutet: KI-Systeme werden mit Rücksicht auf Menschen, Gesellschaft und Umwelt entwickelt. Dabei geht es um Fairness, Transparenz, Sicherheit und den Schutz von Grundrechten.",
+    example:"🤝 Ein Unternehmen testet sein KI-System auf Bias, erklärt den Nutzern, wie es funktioniert, und lässt Menschen wichtige Entscheidungen überprüfen. Das ist Responsible AI." },
+
+  // ── BCI & NEUROTECHNOLOGIE ──────────────────────────────────────────
+
+  { id:41, de:"ALS (Amyotrophe Lateralsklerose)", en:"ALS (Amyotrophic Lateral Sclerosis)", cat:"BCI & Neurotechnologie",
+    short:"Eine unheilbare Krankheit, bei der die Muskeln nach und nach aufhören zu funktionieren.",
+    def:"ALS ist eine Erkrankung des Nervensystems. Die Muskeln werden immer schwächer – man kann irgendwann nicht mehr sprechen, schlucken oder sich bewegen. Der Geist bleibt aber vollständig klar. BCIs sind für ALS-Betroffene besonders wichtig, weil sie ihnen wieder eine Stimme geben können.",
+    example:"🗣️ Ein ALS-Patient kann sich nicht mehr bewegen – aber er denkt an eine Bewegung, ein BCI misst das Signal im Gehirn und übersetzt es in Sprache. So kommuniziert er wieder mit seiner Familie." },
+
+  { id:42, de:"BCI (Brain-Computer-Interface)", en:"Brain-Computer Interface", cat:"BCI & Neurotechnologie",
+    short:"Eine Schnittstelle, die das Gehirn direkt mit einem Computer verbindet.",
+    def:"Ein BCI ist ein System, das elektrische Signale des Gehirns aufnimmt und in Befehle für einen Computer oder eine Maschine umwandelt – oder umgekehrt: Signale ins Gehirn sendet. BCIs werden heute schon bei ALS, Lähmungen und als Sehprothesen eingesetzt.",
+    example:"🧠 Jemand ist gelähmt und kann sich nicht bewegen. Er denkt daran, seinen Arm zu heben – ein BCI liest diesen Gedanken und bewegt den Cursor auf dem Bildschirm. Kein Tippen nötig." },
+
+  { id:43, de:"Bidirektionales BCI",            en:"Bidirectional BCI",       cat:"BCI & Neurotechnologie",
+    short:"Ein BCI, das Signale sowohl lesen als auch ins Gehirn zurückschicken kann.",
+    def:"Ein bidirektionales BCI kann in beide Richtungen kommunizieren: Es liest Gehirnsignale aus und sendet gleichzeitig Signale zurück ins Gehirn. Das ermöglicht zum Beispiel künstliches Tastgefühl – man spürt, was eine Prothese berührt.",
+    example:"🤖 Eine Person mit einer Armprothese fasst ein Glas an. Das bidirektionale BCI sendet ein Signal zurück ins Gehirn – und die Person spürt, wie glatt und kalt das Glas ist." },
+
+  { id:44, de:"Cortex (Gehirnrinde)",           en:"Cortex",                  cat:"BCI & Neurotechnologie",
+    short:"Die äußere Schicht des Gehirns – zuständig für Denken, Fühlen und Bewegen.",
+    def:"Der Cortex ist die äußere Hülle des Gehirns. Er ist in verschiedene Bereiche aufgeteilt, die unterschiedliche Aufgaben haben: Bewegung, Sprache, Sehen, Fühlen. Die meisten BCI-Elektroden werden in der Nähe des Cortex platziert, weil die Signale dort am stärksten sind.",
+    example:"🗺️ Der Cortex ist wie eine Landkarte: Jeder Bereich ist für etwas Bestimmtes zuständig. BCIs 'lesen' genau dort, wo die relevanten Informationen sitzen – z. B. im Bewegungsbereich." },
+
+  { id:45, de:"ECoG (Elektrokortikographie)",   en:"Electrocorticography",    cat:"BCI & Neurotechnologie",
+    short:"Eine Methode, bei der Elektroden direkt auf der Gehirnoberfläche platziert werden.",
+    def:"ECoG ist ein teilinvasives Verfahren: Eine Elektroden-Matte wird auf der Oberfläche des Gehirns platziert – eine Operation ist nötig, aber das Gehirn selbst wird nicht durchstochen. Die Signalqualität ist viel besser als beim EEG, das Risiko geringer als bei tiefen Implantaten.",
+    example:"🏥 Stellen Sie sich vor: Eine dünne Folie mit winzigen Sensoren liegt auf dem Gehirn wie ein Pflaster auf der Haut. Sie liest die Signale sehr präzise – ohne ins Gehirn einzudringen." },
+
+  { id:46, de:"EEG (Elektroenzephalographie)",  en:"Electroencephalography",  cat:"BCI & Neurotechnologie",
+    short:"Eine Methode, bei der Elektroden auf der Kopfhaut Gehirnströme messen.",
+    def:"Das EEG ist eine nicht-invasive Methode – es braucht keine Operation. Eine Kappe mit Elektroden wird auf den Kopf gesetzt und misst schwache elektrische Signale des Gehirns. Die Signalqualität ist geringer als bei implantierten Systemen, aber es ist sicher und sofort einsetzbar.",
+    example:"🎧 Stellen Sie sich eine Badekappe mit kleinen Sensoren vor. Sie setzen sie auf – und ein Computer kann ablesen, ob Sie entspannt oder konzentriert sind. Das ist ein EEG-basiertes BCI." },
+
+  { id:47, de:"Elektrode",                      en:"Electrode",               cat:"BCI & Neurotechnologie",
+    short:"Ein kleiner Sensor, der elektrische Signale des Gehirns aufnimmt oder abgibt.",
+    def:"Elektroden sind die 'Ohren' eines BCI-Systems. Sie nehmen die winzigen elektrischen Signale der Nervenzellen wahr. Je näher eine Elektrode am Gehirn ist, desto besser und klarer ist das Signal. Moderne Implantate haben bis zu 65.000 Elektroden auf einem Chip.",
+    example:"🎙️ Eine Elektrode ist wie ein sehr empfindliches Mikrofon – nur dass sie keine Töne aufnimmt, sondern elektrische Impulse von Nervenzellen." },
+
+  { id:48, de:"Implantat (BCI)",                en:"BCI Implant",             cat:"BCI & Neurotechnologie",
+    short:"Ein kleines Gerät, das in oder am Gehirn eingesetzt wird, um Signale zu messen.",
+    def:"BCI-Implantate sind winzige Geräte, die durch eine Operation in oder nahe am Gehirn platziert werden. Sie messen Gehirnsignale sehr präzise und können Daten drahtlos übertragen. Bekannte Beispiele sind Neuralink und das Synchron Stentrode.",
+    example:"💡 Der Neuralink-Chip ist so groß wie eine Münze. Er sitzt unter der Schädeldecke und sendet Gehirnsignale drahtlos an ein Gerät – wie WLAN im Kopf." },
+
+  { id:49, de:"Invasiv / Nicht-invasiv",        en:"Invasive / Non-invasive", cat:"BCI & Neurotechnologie",
+    short:"Ob eine Operation nötig ist oder nicht.",
+    def:"Invasive BCIs erfordern eine Operation – Elektroden werden ins oder ans Gehirn gebracht. Sie liefern sehr genaue Signale. Nicht-invasive BCIs (wie EEG-Headsets) werden einfach aufgesetzt – keine Operation, aber weniger Signalqualität. Teilinvasive Systeme liegen dazwischen.",
+    example:"🩺 Nicht-invasiv: Sie setzen eine Kappe auf – fertig. Invasiv: Ein Neurochirurg platziert Elektroden direkt am Gehirn in einer Operation. Beides hat Vor- und Nachteile." },
+
+  { id:50, de:"Kognitive Freiheit",             en:"Cognitive Liberty",       cat:"Risiken & Ethik",
+    short:"Das Recht, die eigenen Gedanken frei und ohne fremden Einfluss zu haben.",
+    def:"Kognitive Freiheit bedeutet: Niemand darf Ihre Gedanken lesen, kontrollieren oder beeinflussen – ohne Ihre Zustimmung. Dieses Recht wird durch BCIs besonders wichtig, weil diese Technologie theoretisch Gedanken lesen oder sogar beeinflussen kann.",
+    example:"🔒 Stellen Sie sich vor, ein Arbeitgeber will wissen, was seine Mitarbeiter während der Arbeit denken. Kognitive Freiheit sagt: Das ist verboten. Ihre Gedanken gehören nur Ihnen." },
+
+  { id:51, de:"Motorischer Kortex",             en:"Motor Cortex",            cat:"BCI & Neurotechnologie",
+    short:"Der Bereich im Gehirn, der Bewegungen steuert – und das wichtigste Ziel für BCIs.",
+    def:"Der motorische Kortex liegt oben im Gehirn. Er sendet Befehle an die Muskeln – zum Beispiel: 'Hebe den Arm!' Auch bei vollständiger Lähmung sendet dieser Bereich noch Signale, wenn man versucht oder sich vorstellt, sich zu bewegen. BCIs nutzen genau diese Signale.",
+    example:"💪 Eine gelähmte Person denkt daran, ihre Hand zu schließen. Der motorische Kortex sendet trotzdem ein Signal – das BCI liest es und schließt eine Roboterhand. Der Wille bleibt, auch wenn der Körper nicht mehr mitmacht." },
+
+  { id:52, de:"Neuraldaten",                    en:"Neural Data",             cat:"Risiken & Ethik",
+    short:"Daten, die direkt aus dem Gehirn stammen – die privatesten Daten überhaupt.",
+    def:"Neuraldaten sind Aufzeichnungen der elektrischen Aktivität des Gehirns. Sie können Gedanken, Emotionen, Absichten oder Gesundheitszustände widerspiegeln. Sie gelten als die sensibelsten persönlichen Daten – noch intimer als Gesundheitsdaten oder Fingerabdrücke.",
+    example:"⚠️ Wer Ihre Neuraldaten hat, weiß möglicherweise, was Sie denken – bevor Sie es aussprechen. Deshalb ist die Frage 'Wem gehören meine Hirndaten?' so wichtig." },
+
+  { id:53, de:"Neuralink",                      en:"Neuralink",               cat:"Werkzeuge & Produkte",
+    short:"Ein Unternehmen von Elon Musk, das Gehirn-Computer-Implantate entwickelt.",
+    def:"Neuralink entwickelt invasive BCIs: Ein münzgroßer Chip mit über 1.000 ultradünnen Elektroden wird ins Gehirn implantiert. Der erste Patient (2024) konnte damit einen Cursor und Computerspiele steuern – nur mit Gedanken. Das Unternehmen hat seinen Sitz in den USA.",
+    example:"🖱️ Noland Arbaugh ist seit einem Tauchunfall gelähmt. Mit dem Neuralink-Implantat spielt er Schach und steuert einen Computer – schneller als viele Menschen mit der Maus." },
+
+  { id:54, de:"Neuro-Hacking",                  en:"Neuro-Hacking",           cat:"Risiken & Ethik",
+    short:"Der unbefugte Zugriff auf Gehirnsignale oder deren Manipulation.",
+    def:"Neuro-Hacking bedeutet: Jemand greift ohne Erlaubnis auf die Daten eines BCI-Systems zu – oder manipuliert die Signale. Da viele BCIs per Bluetooth oder WLAN Daten übertragen, sind sie grundsätzlich angreifbar. 2025 wurde erstmals ein EEG-Signal per Angriff manipuliert.",
+    example:"📡 Stellen Sie sich vor: Ein BCI überträgt Ihre Gehirnsignale per Funk. Ein Angreifer fängt diese Daten ab – wie beim Abhören eines Telefongesprächs. Das ist Neuro-Hacking." },
+
+  { id:55, de:"Neurorechte",                    en:"Neurorights",             cat:"Risiken & Ethik",
+    short:"Grundrechte, die speziell das Gehirn und die Gedanken der Menschen schützen.",
+    def:"Neurorechte sind neue Grundrechte für das digitale Zeitalter. Sie wurden vom Neurowissenschaftler Rafael Yuste definiert und umfassen: mentale Privatsphäre, persönliche Identität, freier Wille und gleichberechtigter Zugang zu Neurotechnologie. Chile hat sie als erstes Land weltweit gesetzlich verankert.",
+    example:"🏛️ Chile hat 2021 ein Gesetz verabschiedet: Ihre Gehirnaktivität darf nicht ohne Ihre Zustimmung gespeichert oder verkauft werden. Das ist ein Neurorecht in der Praxis." },
+
+  { id:56, de:"Sehprothese (BCI)",              en:"Visual Prosthesis (BCI)", cat:"BCI & Neurotechnologie",
+    short:"Ein BCI, das blinden Menschen ermöglicht, wieder (etwas) zu sehen.",
+    def:"Sehprothesen umgehen das beschädigte Auge und stimulieren direkt den visuellen Bereich des Gehirns mit elektrischen Signalen. So entstehen Lichtpunkte oder einfache Bilder im Kopf. Mehr als 80 % der Teilnehmer in einer Studie bei Makuladegeneration erlangten bedeutsame Sehfähigkeit zurück.",
+    example:"👁️ Eine blinde Person trägt eine Kamera-Brille. Die Kamera sendet Bilder an einen Chip, der den Sehbereich im Gehirn stimuliert. Die Person sieht keine Farben – aber sie erkennt Umrisse und kann sich orientieren." },
+
+  { id:57, de:"Stentrode",                      en:"Stentrode",               cat:"BCI & Neurotechnologie",
+    short:"Ein BCI-Implantat, das ohne Gehirn-OP durch eine Blutader ins Gehirn gelangt.",
+    def:"Das Stentrode wurde vom australischen Unternehmen Synchron entwickelt. Es ist so klein wie ein Blutgefäß-Stent und wird durch eine Halsvene ins Gehirn navigiert – keine Öffnung des Schädels nötig. Die Signalqualität ist etwas geringer als bei Neuralink, aber das Risiko ist deutlich kleiner.",
+    example:"🩸 Wie ein Stent beim Herz-Eingriff: Das Stentrode wird durch ein Blutgefäß ins Gehirn geschoben – kein Aufschneiden des Schädels. 2025 steuerte ein Patient damit sein iPhone per Gedanken." },
+
+  // ── ROBOTIK ─────────────────────────────────────────────────────────
+
+  { id:58, de:"Aktor",                          en:"Actuator",                cat:"Robotik",
+    short:"Der Teil eines Roboters, der sich bewegt oder eine Kraft ausübt.",
+    def:"Ein Aktor ist das, was einen Roboter bewegen lässt – zum Beispiel ein Motor, ein Hydraulikzylinder oder ein Muskelimitat. Aktoren sind die 'Muskeln' des Roboters. Sie setzen elektrische Befehle in physische Bewegungen um.",
+    example:"🦾 Ein Roboterarm greift nach einem Glas. Die Aktoren in jedem Gelenk drehen sich genau so weit, dass die Hand das Glas sicher hält – weder zu fest noch zu locker." },
+
+  { id:59, de:"Cobots (kollaborative Roboter)",  en:"Collaborative Robots",    cat:"Robotik",
+    short:"Roboter, die sicher direkt neben Menschen arbeiten.",
+    def:"Cobots sind speziell so gebaut, dass sie ohne Schutzgitter neben Menschen arbeiten können. Sie erkennen, wenn ein Mensch in ihre Nähe kommt, und verlangsamen oder stoppen sich automatisch. Sie sind leichter, flexibler und günstiger als klassische Industrieroboter.",
+    example:"🏭 In einer Fabrik schraubt ein Cobot Teile zusammen – direkt neben einem Mitarbeiter. Berührt der Mensch versehentlich den Arm des Roboters, hält er sofort an. Keine Verletzungsgefahr." },
+
+  { id:60, de:"Endefflektor",                   en:"End Effector",            cat:"Robotik",
+    short:"Das Werkzeug am Ende eines Roboterarms – zum Greifen, Schweißen oder Schneiden.",
+    def:"Der Endeffektor ist das letzte Glied eines Roboterarms – das, was die eigentliche Arbeit erledigt. Es kann ein Greifer, eine Schweißzange, eine Kamera oder eine Nadel sein. Je nach Aufgabe wird ein anderer Endeffektor montiert.",
+    example:"🔧 Ein Roboter in der Autofabrik hat eine Schweißzange als Endeffektor. In der Lebensmittelindustrie ist es ein sanfter Sauggreifer, der empfindliche Erdbeeren aufnimmt ohne sie zu zerdrücken." },
+
+  { id:61, de:"Freiheitsgrade (DoF)",           en:"Degrees of Freedom (DoF)", cat:"Robotik",
+    short:"Wie viele verschiedene Richtungen und Drehungen ein Roboter ausführen kann.",
+    def:"Freiheitsgrade beschreiben, wie beweglich ein Roboter ist. Ein Roboterarm mit 6 Freiheitsgraden kann sich in alle Richtungen bewegen und drehen – ähnlich wie ein menschlicher Arm. Mehr Freiheitsgrade bedeuten mehr Flexibilität, aber auch mehr Komplexität.",
+    example:"💪 Der menschliche Arm hat etwa 7 Freiheitsgrade. Ein Industrieroboter hat meist 6 – damit kann er jeden Punkt im Raum aus jeder Richtung anfahren. Ein einfacher Roboter mit nur 2 Freiheitsgraden kann sich dagegen nur hoch-runter und links-rechts bewegen." },
+
+  { id:62, de:"Humanoider Roboter",             en:"Humanoid Robot",          cat:"Robotik",
+    short:"Ein Roboter, der dem menschlichen Körper nachempfunden ist.",
+    def:"Humanoide Roboter haben einen Kopf, Rumpf, Arme und Beine – ähnlich wie Menschen. Sie sollen in menschlichen Umgebungen arbeiten können: Treppen steigen, Türen öffnen, Werkzeuge benutzen. Bekannte Beispiele sind Unitree H1, Boston Dynamics Atlas oder Teslas Optimus.",
+    example:"🚶 Ein humanoider Roboter geht durch ein Büro, öffnet eine Tür, nimmt ein Paket vom Tisch und bringt es in ein anderes Zimmer – genau das, was ein Mensch auch tun würde." },
+
+  { id:63, de:"Kinematik (Robotik)",            en:"Kinematics (Robotics)",   cat:"Robotik",
+    short:"Die Wissenschaft von der Bewegung von Robotergliedern.",
+    def:"Kinematik beschreibt, wie sich die Glieder eines Roboters bewegen müssen, damit der Endeffektor an einen bestimmten Punkt gelangt. Die 'Vorwärtskinematik' berechnet, wo der Arm endet. Die 'Inverse Kinematik' berechnet, welche Gelenke sich wie drehen müssen, um ein Ziel zu erreichen.",
+    example:"🎯 Sie sagen dem Roboter: 'Greife den Gegenstand bei Koordinate X,Y,Z.' Die inverse Kinematik berechnet in Millisekunden, wie sich jedes einzelne Gelenk bewegen muss – wie ein mentales 3D-Puzzle." },
+
+  { id:64, de:"LIDAR",                          en:"LIDAR",                   cat:"Robotik",
+    short:"Ein Sensor, der mit Laserstrahlen die Umgebung dreidimensional vermisst.",
+    def:"LIDAR steht für 'Light Detection and Ranging'. Es sendet Laserpulse aus und misst, wie lange sie zurückbrauchen. So entsteht eine präzise 3D-Karte der Umgebung. LIDAR wird in selbstfahrenden Autos, Drohnen und Robotern eingesetzt.",
+    example:"🚗 Ein selbstfahrendes Auto hat ein rotierendes LIDAR-Gerät auf dem Dach. Es sendet 150.000 Laserpulse pro Sekunde aus – so 'sieht' es andere Autos, Fußgänger und Hindernisse in 3D, auch im Dunkeln." },
+
+  { id:65, de:"Pfadplanung",                    en:"Path Planning",           cat:"Robotik",
+    short:"Wie ein Roboter den besten Weg zu einem Ziel berechnet – ohne Hindernisse zu berühren.",
+    def:"Pfadplanung ist der Prozess, mit dem ein Roboter oder autonomes Fahrzeug berechnet, wie es von Punkt A zu Punkt B kommt. Es muss Hindernisse umgehen, effizient sein und sicher bleiben. KI-Algorithmen wie A* oder RRT sind typische Verfahren.",
+    example:"🗺️ Ein Lagerroboter muss 50 Pakete sortieren. Die Pfadplanung berechnet die kürzeste Route durch das Lager – ohne andere Roboter oder Regale zu treffen, wie ein digitales Straßennavi." },
+
+  { id:66, de:"Sensor-Fusion",                  en:"Sensor Fusion",           cat:"Robotik",
+    short:"Verschiedene Sensoren werden kombiniert, um ein genaueres Bild der Umgebung zu erhalten.",
+    def:"Sensor-Fusion bedeutet: Ein Roboter oder Fahrzeug nutzt mehrere Sensoren gleichzeitig – Kamera, LIDAR, Radar, GPS – und kombiniert ihre Daten. So gleichen sich Schwächen gegenseitig aus: Kameras versagen im Nebel, LIDAR im Regen, GPS im Tunnel – zusammen sind sie robuster.",
+    example:"🌫️ Bei Nebel sieht die Kamera schlecht. Aber LIDAR und Radar funktionieren weiterhin. Sensor-Fusion kombiniert alle Informationen – das Auto 'sieht' trotzdem zuverlässig." },
+
+  { id:67, de:"Servo-Motor",                    en:"Servo Motor",             cat:"Robotik",
+    short:"Ein präziser Motor, der eine genaue Position oder Geschwindigkeit halten kann.",
+    def:"Servo-Motoren sind besondere Elektromotoren mit eingebauter Rückmeldung. Sie 'wissen', in welcher Position sie sich befinden, und halten diese exakt. In Roboterarmen sorgen Servo-Motoren dafür, dass jedes Gelenk genau dort bleibt, wo es sein soll.",
+    example:"🎮 Eine Spielzeugdrohne hält stabil in der Luft – vier Servo-Motoren regeln jede Sekunde Hunderte von kleinen Anpassungen, damit sie nicht wegdriftet." },
+
+  { id:68, de:"Schwarm-Robotik",                en:"Swarm Robotics",          cat:"Robotik",
+    short:"Viele einfache Roboter arbeiten zusammen wie ein Schwarm – ohne zentrale Steuerung.",
+    def:"Bei der Schwarm-Robotik erledigen viele kleine, einfache Roboter gemeinsam komplexe Aufgaben. Kein einzelner Roboter hat den Überblick – die Intelligenz entsteht aus dem Zusammenspiel aller. Inspiration: Ameisen, Bienen, Vogelschwärme.",
+    example:"🐝 100 kleine Drohnen bauen gemeinsam eine Struktur – jede kennt nur ihre direkten Nachbarn, aber das Ergebnis ist präzise. Fällt eine aus, macht der Schwarm weiter." },
+
+  // ── AUTONOMES FAHREN ─────────────────────────────────────────────────
+
+  { id:69, de:"Autonomiestufen (SAE 0–5)",      en:"Autonomy Levels (SAE 0–5)", cat:"Autonomes Fahren",
+    short:"Eine Skala, die beschreibt, wie selbständig ein Fahrzeug fahren kann.",
+    def:"Die SAE-Skala teilt autonomes Fahren in 6 Stufen ein: Stufe 0 = kein Assistent. Stufe 1 = Spurhalteassistent. Stufe 2 = Autopilot (Mensch überwacht). Stufe 3 = Auto übernimmt, Mensch muss aber eingreifen können. Stufe 4 = vollautomatisch in bestimmten Bereichen. Stufe 5 = vollständig autonom, überall.",
+    example:"🚗 Tesla Autopilot ist Stufe 2 – das Auto steuert, aber der Fahrer muss die Hände am Lenkrad lassen und jederzeit bereit sein einzugreifen. Echtes autonomes Fahren (Stufe 5) gibt es noch nicht im Alltag." },
+
+  { id:70, de:"Geofencing",                     en:"Geofencing",              cat:"Autonomes Fahren",
+    short:"Unsichtbare digitale Grenzen, innerhalb derer ein Fahrzeug autonom fahren darf.",
+    def:"Geofencing legt digitale Grenzen fest. Autonome Fahrzeuge dürfen nur innerhalb bestimmter, genau kartierter Bereiche ohne Fahrer fahren. Verlässt das Fahrzeug diese Zone, übernimmt ein Mensch oder das Auto hält an. So werden Risiken in unbekanntem Terrain vermieden.",
+    example:"🗺️ Ein Robotaxi in München fährt vollautomatisch – aber nur innerhalb der Innenstadt. An der Stadtgrenze hält es an oder ein Fahrer übernimmt per Fernsteuerung." },
+
+  { id:71, de:"HD-Karte (High Definition Map)", en:"HD Map",                  cat:"Autonomes Fahren",
+    short:"Eine extrem genaue digitale Karte für selbstfahrende Autos – zentimetergenau.",
+    def:"HD-Karten sind keine normalen Navi-Karten. Sie enthalten zentimetergenaue Informationen über Fahrspuren, Ampeln, Schilder, Bordsteine und Straßenmarkierungen. Selbstfahrende Autos nutzen sie, um zu wissen, wo sie sich genau befinden – auch wenn Sensoren kurzzeitig ausfallen.",
+    example:"🗺️ Google Maps zeigt Straßen in Metern. Eine HD-Karte zeigt jede Fahrbahnmarkierung auf 5 cm genau – das selbstfahrende Auto weiß damit immer präzise, wo es auf der Straße ist." },
+
+  { id:72, de:"Redundanz (Sicherheit)",         en:"Redundancy (Safety)",     cat:"Autonomes Fahren",
+    short:"Wichtige Systeme sind mehrfach vorhanden – damit das Fahrzeug sicher bleibt, wenn eines ausfällt.",
+    def:"Redundanz bedeutet: Sicherheitskritische Systeme gibt es doppelt oder dreifach. Fällt ein Sensor oder Computer aus, übernimmt sofort ein anderer. Bei autonomen Fahrzeugen ist das lebenswichtig – ein einziger Fehler darf nicht zum Unfall führen.",
+    example:"✈️ Flugzeuge haben bis zu dreifach redundante Systeme. Moderne autonome Autos arbeiten ähnlich: Zwei unabhängige Bremssysteme, zwei Lenkcomputer – fällt eines aus, übernimmt das andere in Millisekunden." },
+
+  { id:73, de:"Trolley-Problem (Ethik)",        en:"Trolley Problem (Ethics)", cat:"Realkonflikte & Ethik",
+    short:"Ein Gedankenexperiment: Was soll eine KI tun, wenn sie zwischen zwei schlechten Optionen wählen muss?",
+    def:"Das Trolley-Problem fragt: Wenn ein selbstfahrendes Auto einen Unfall nicht mehr verhindern kann – soll es geradeaus fahren und eine Person verletzen, oder ausweichen und mehrere? Wer entscheidet das? Der Hersteller? Der Staat? Der Käufer? Diese Frage hat noch keine allgemein akzeptierte Antwort.",
+    example:"🚗 Ein autonomes Auto fährt mit 50 km/h. Plötzlich laufen 3 Kinder auf die Straße. Ausweichen würde einen Fußgänger auf dem Gehweg treffen. Geradeaus fahren würde die Kinder gefährden. Was programmiert man dem Auto?" },
+
+  { id:74, de:"V2X-Kommunikation",              en:"Vehicle-to-Everything (V2X)", cat:"Autonomes Fahren",
+    short:"Fahrzeuge tauschen Informationen mit ihrer Umgebung aus – mit anderen Autos, Ampeln und der Infrastruktur.",
+    def:"V2X steht für 'Vehicle to Everything'. Autonome Fahrzeuge kommunizieren drahtlos mit anderen Autos (V2V), Ampeln (V2I), Fußgängern (V2P) und dem Netz (V2N). So weiß das Auto schon, dass die Ampel in 200 Meter rot wird – bevor es sie sieht.",
+    example:"🚦 Eine Ampel sendet ein Signal: 'Ich werde in 4 Sekunden rot.' Das autonome Auto empfängt dieses Signal und beginnt bereits zu bremsen – ruhiger, früher und sicherer als ein Mensch." },
+
+  // ── COMPUTER VISION (ERWEITERT) ──────────────────────────────────────
+
+  { id:75, de:"Bildsegmentierung",              en:"Image Segmentation",      cat:"Technologien",
+    short:"KI erkennt, welche Pixel eines Bildes zu welchem Objekt gehören.",
+    def:"Bei der Bildsegmentierung 'malt' die KI jedes Objekt im Bild mit einer anderen Farbe ein – sie weiß genau, welche Bildpunkte zum Auto, zur Straße oder zum Fußgänger gehören. Das ist präziser als einfache Objekterkennung und wichtig für autonomes Fahren und Medizin.",
+    example:"🏥 Ein KI-System analysiert ein MRT-Bild. Es erkennt haargenau, welche Pixel zum Tumor gehören und welche zu gesundem Gewebe – und markiert sie farbig für den Arzt." },
+
+  { id:76, de:"Bounding Box",                   en:"Bounding Box",            cat:"Technologien",
+    short:"Ein Rechteck, das ein erkanntes Objekt in einem Bild einrahmt.",
+    def:"Eine Bounding Box ist ein Rechteck, das KI-Systeme um erkannte Objekte zeichnen. So wird markiert: 'Hier ist ein Auto, hier ist eine Person.' Es ist die einfachste Art, Objekte in Bildern zu lokalisieren – schnell und recheneffizient.",
+    example:"📹 Eine Überwachungskamera erkennt Personen. Um jede Person erscheint automatisch ein grünes Rechteck – das ist eine Bounding Box. Dahinter steckt Computer Vision." },
+
+  { id:77, de:"Gesichtserkennung",              en:"Facial Recognition",      cat:"Technologien",
+    short:"KI erkennt und identifiziert Personen anhand ihres Gesichts.",
+    def:"Gesichtserkennung analysiert Gesichtsmerkmale – Abstand der Augen, Form der Nase, Kieferlinie – und vergleicht sie mit einer Datenbank. Sie wird zur Entsperrung von Smartphones, an Flughäfen und in Überwachungssystemen genutzt. In der EU ist der Einsatz im öffentlichen Raum stark eingeschränkt.",
+    example:"📱 Ihr Smartphone entsperrt sich, wenn Sie es anschauen. In weniger als einer Sekunde erkennt die KI Ihr Gesicht – auch mit Brille, in schlechtem Licht oder wenn Sie älter geworden sind." },
+
+  { id:78, de:"Objekterkennung",                en:"Object Detection",        cat:"Technologien",
+    short:"KI erkennt und benennt Objekte in einem Bild oder Video.",
+    def:"Objekterkennung ist die Fähigkeit von KI, Dinge in Bildern zu identifizieren: 'Dort ist ein Auto, dort eine Katze, dort ein Stoppschild.' Moderne Systeme erkennen Hunderte von Objektklassen gleichzeitig – in Echtzeit und mit hoher Genauigkeit.",
+    example:"🐱 Sie fotografieren Ihr Wohnzimmer. Die KI erkennt automatisch: Sofa (94 %), Katze (98 %), Pflanze (87 %), Fernseher (99 %). Das ist Objekterkennung." },
+
+  { id:79, de:"Optischer Fluss",                en:"Optical Flow",            cat:"Technologien",
+    short:"KI erkennt, wie sich Objekte zwischen zwei Bildern bewegt haben.",
+    def:"Optischer Fluss analysiert die Bewegung von Bildpunkten zwischen aufeinanderfolgenden Videoframes. So kann eine KI verstehen, in welche Richtung sich Objekte bewegen und wie schnell. Wichtig für autonomes Fahren, Sportanalysen und Videobearbeitung.",
+    example:"⚽ Eine KI analysiert ein Fußballspiel. Der optische Fluss zeigt genau, wie schnell der Ball fliegt und wohin – ohne dass jemand ihn manuell verfolgen muss." },
+
+  // ── ETHIK & GESELLSCHAFT ─────────────────────────────────────────────
+
+  { id:80, de:"Algorithmische Diskriminierung", en:"Algorithmic Discrimination", cat:"Realkonflikte & Ethik",
+    short:"Wenn KI-Systeme bestimmte Gruppen systematisch benachteiligen.",
+    def:"Algorithmische Diskriminierung entsteht, wenn KI-Systeme aufgrund von Hautfarbe, Geschlecht, Herkunft oder Alter unfaire Entscheidungen treffen – ohne dass es jemand beabsichtigt hat. Sie passiert, wenn Trainingsdaten historische Ungerechtigkeiten enthalten.",
+    example:"💼 Ein KI-System prüft Kreditanfragen. Es lehnt häufiger Menschen aus bestimmten Stadtteilen ab – nicht weil sie schlechter zahlen, sondern weil historische Daten diese Viertel als 'risikoreich' eingestuft haben. Das ist algorithmische Diskriminierung." },
+
+  { id:81, de:"Digitale Kluft",                 en:"Digital Divide",          cat:"Realkonflikte & Ethik",
+    short:"Die Ungleichheit zwischen Menschen, die Zugang zu Technologie haben, und denen, die ihn nicht haben.",
+    def:"Die digitale Kluft beschreibt die wachsende Ungleichheit zwischen Menschen mit und ohne Zugang zu Internet, Computern und KI-Technologien. Wer keinen Zugang hat, wird in einer digitalisierten Welt immer stärker benachteiligt – bei Bildung, Arbeit und gesellschaftlicher Teilhabe.",
+    example:"📚 In einer ländlichen Schule ohne schnelles Internet können Schüler keine KI-Tools nutzen. In einer Stadtschule ist KI bereits im Unterricht integriert. Diese Ungleichheit ist die digitale Kluft." },
+
+  { id:82, de:"Erklärbare KI (XAI)",            en:"Explainable AI (XAI)",    cat:"Risiken & Ethik",
+    short:"KI, die ihre Entscheidungen in verständlicher Sprache erklären kann.",
+    def:"Erklärbare KI (XAI) zielt darauf ab, dass KI-Systeme nicht nur richtige Entscheidungen treffen, sondern auch erklären können, warum. Das ist besonders wichtig in Medizin, Justiz und Finanzen – überall wo Menschen das Recht haben zu verstehen, warum eine Maschine so entschieden hat.",
+    example:"⚕️ Eine KI empfiehlt eine Krebsdiagnose. Mit XAI erklärt sie: 'Ich habe diese drei Merkmale im Bild erkannt, die in 94 % der Fälle auf diese Diagnose hindeuten.' Der Arzt kann die Entscheidung nachvollziehen und prüfen." },
+
+  { id:83, de:"KI-Waffen / Letale autonome Systeme", en:"Lethal Autonomous Weapons (LAWS)", cat:"Realkonflikte & Ethik",
+    short:"Waffensysteme, die selbständig – ohne menschlichen Befehl – töten können.",
+    def:"Letale autonome Waffensysteme (LAWS) sind Roboter oder Drohnen, die Ziele selbständig auswählen und angreifen – ohne einen Menschen, der den Befehl gibt. Sie werden weltweit bereits entwickelt. Die internationale Gemeinschaft streitet über ein Verbot. Die ethische Kernfrage: Darf eine Maschine über Leben und Tod entscheiden?",
+    example:"🤖 Eine autonome Drohne erkennt per KI militärische Fahrzeuge und greift sie an – ohne dass ein Mensch den Abzug drückt. Kein Gesetz der Welt ist bisher in der Lage, das zu verbieten." },
+
+  { id:84, de:"Mensch-in-der-Schleife (HITL)",  en:"Human-in-the-Loop (HITL)", cat:"Risiken & Ethik",
+    short:"Ein Mensch überwacht und genehmigt wichtige KI-Entscheidungen.",
+    def:"Human-in-the-Loop bedeutet: Bei wichtigen oder riskanten Entscheidungen ist immer ein Mensch dabei, der prüft, bestätigt oder eingreift. Die KI arbeitet, aber der Mensch behält die Kontrolle. Das Gegenteil wäre vollständige Autonomie – Human out of the Loop.",
+    example:"✈️ Ein KI-System schlägt vor: 'Starte jetzt eine Rakete.' Aber erst wenn ein Mensch auf 'Bestätigen' drückt, passiert etwas. Das ist Human-in-the-Loop – und 'Human in the Lead' im wörtlichsten Sinne." },
+
+  { id:85, de:"Surveillance Capitalism",        en:"Surveillance Capitalism",  cat:"Realkonflikte & Ethik",
+    short:"Ein Geschäftsmodell, das auf dem Sammeln und Verkaufen von Verhaltensdaten basiert.",
+    def:"Surveillance Capitalism (Überwachungskapitalismus) beschreibt, wie Tech-Konzerne kostenlose Dienste anbieten – und dafür Daten über das Verhalten, die Gedanken und Wünsche der Nutzer sammeln und verkaufen. Diese Daten sind die eigentliche Ware. Der Begriff wurde von der Wissenschaftlerin Shoshana Zuboff geprägt.",
+    example:"📱 Sie nutzen Google Maps kostenlos. Dafür weiß Google, wo Sie täglich hingehen, was Sie kaufen und wie lange Sie irgendwo bleiben. Diese Daten werden an Werbetreibende verkauft. Sie sind das Produkt." },
+
+  // ── BARRIEREFREIHEIT ─────────────────────────────────────────────────
+
+  { id:86, de:"Assistive Technologie",          en:"Assistive Technology",    cat:"Barrierefreiheit & KI",
+    short:"Technologien, die Menschen mit Behinderungen helfen, gleichberechtigt teilzunehmen.",
+    def:"Assistive Technologien sind Werkzeuge und Geräte, die Menschen mit körperlichen, kognitiven oder sensorischen Einschränkungen unterstützen. KI macht sie immer leistungsfähiger: Sprachsteuerung, automatische Untertitel, Bildschirmlesegeräte oder Kommunikationshilfen für nichtsprechende Menschen.",
+    example:"🦽 Eine blinde Person nutzt einen KI-gestützten Screenreader, der ihr vorliest, was auf dem Bildschirm steht – und ihr sogar Bilder beschreibt: 'Ein Foto zeigt zwei Personen beim Spaziergang im Park.'" },
+
+  { id:87, de:"Barrierefreiheit (Digital)",     en:"Digital Accessibility",   cat:"Barrierefreiheit & KI",
+    short:"Digitale Inhalte und Technologien sind für alle Menschen nutzbar – unabhängig von Einschränkungen.",
+    def:"Digitale Barrierefreiheit bedeutet: Websites, Apps und KI-Systeme sind so gestaltet, dass auch Menschen mit Seh-, Hör-, motorischen oder kognitiven Einschränkungen sie vollständig nutzen können. In der EU ist digitale Barrierefreiheit für öffentliche Stellen gesetzlich vorgeschrieben.",
+    example:"🖥️ Eine Website hat Texte in einfacher Sprache, alle Bilder haben Alternativtexte für Screenreader, Videos haben Untertitel – das ist digitale Barrierefreiheit in der Praxis." },
+
+  { id:88, de:"Einfache Sprache",               en:"Plain Language",          cat:"Barrierefreiheit & KI",
+    short:"Texte, die für alle Menschen leicht zu verstehen sind.",
+    def:"Einfache Sprache verwendet kurze Sätze, bekannte Wörter und eine klare Struktur. Sie ist besonders wichtig für Menschen mit Lernschwierigkeiten, geringen Deutschkenntnissen oder kognitiven Einschränkungen. KI kann helfen, Texte automatisch in einfache Sprache zu übersetzen.",
+    example:"📝 Statt: 'Die Inanspruchnahme medizinischer Leistungen erfordert die Vorlage eines gültigen Versicherungsnachweises.' Einfache Sprache: 'Bringen Sie bitte Ihre Krankenkassenkarte mit.'" },
+
+  { id:89, de:"Inklusive KI",                   en:"Inclusive AI",            cat:"Barrierefreiheit & KI",
+    short:"KI, die von Anfang an so entwickelt wird, dass sie alle Menschen berücksichtigt.",
+    def:"Inklusive KI bedeutet: Schon beim Entwickeln eines KI-Systems werden Menschen mit unterschiedlichen Fähigkeiten, Hintergründen und Bedürfnissen einbezogen. Ziel ist es, dass KI niemanden ausschließt oder benachteiligt – weder durch Bias noch durch mangelnde Zugänglichkeit.",
+    example:"🌍 Ein KI-Sprachassistent wird mit Daten aus vielen Sprachen, Dialekten und Akzenten trainiert – damit er auch Menschen mit Behinderungen oder nicht-muttersprachlichem Deutsch gut versteht." },
+
+  { id:90, de:"Screenreader",                   en:"Screen Reader",           cat:"Barrierefreiheit & KI",
+    short:"Ein Programm, das Bildschirminhalte vorliest – für blinde oder sehbehinderte Menschen.",
+    def:"Ein Screenreader liest alles vor, was auf dem Bildschirm steht – Texte, Menüs, Buttons, Fehlermeldungen. Moderne Screenreader nutzen KI, um auch Bilder zu beschreiben. Sie sind für viele blinde Menschen das wichtigste Werkzeug zur digitalen Teilhabe.",
+    example:"👁️ Eine blinde Person öffnet eine E-Mail. Der Screenreader liest laut vor: 'Betreff: Ihr Termin am Montag. Von: Dr. Müller. Inhalt: Bitte bestätigen Sie ...' – alles, was andere sehen, hört sie." },
+
+  // ── REALKONFLIKTE ────────────────────────────────────────────────────
+
+  { id:91, de:"Automatisierungsparadoxon",      en:"Automation Paradox",      cat:"Realkonflikte & Ethik",
+    short:"Je mehr KI übernimmt, desto unvorbereiterter sind Menschen, wenn sie eingreifen müssen.",
+    def:"Das Automatisierungsparadoxon beschreibt ein Problem: Wenn KI immer mehr Aufgaben übernimmt, verlieren Menschen die Übung und Aufmerksamkeit – genau dann müssen sie aber in Notsituationen blitzschnell eingreifen. Mehr Automatisierung kann paradoxerweise zu gefährlicheren Situationen führen.",
+    example:"✈️ Piloten, die fast nur noch den Autopiloten überwachen, verlieren mit der Zeit ihre Handfertigkeiten. Fällt das System plötzlich aus, fehlt die Routine für das manuelle Fliegen – das Paradoxon zeigt sich in Unfallstatistiken." },
+
+  { id:92, de:"Job-Displacement",               en:"Job Displacement",        cat:"Realkonflikte & Ethik",
+    short:"KI und Roboter ersetzen bestimmte Berufe oder Tätigkeiten.",
+    def:"Job-Displacement beschreibt, wenn Arbeitsplätze durch Automatisierung und KI wegfallen. Besonders betroffen sind Routinetätigkeiten – in der Produktion, im Büro und im Kundendienst. Gleichzeitig entstehen neue Berufe. Die Frage ist: Entstehen genug neue Jobs und haben alle Menschen die Chance, sich umzuschulen?",
+    example:"🏭 Eine Bank stellt 200 Mitarbeiter ein, die Kreditanträge prüfen. Drei Jahre später übernimmt eine KI 80 % dieser Arbeit. Was passiert mit diesen Menschen? Das ist Job-Displacement." },
+
+  { id:93, de:"Technologische Arbeitslosigkeit", en:"Technological Unemployment", cat:"Realkonflikte & Ethik",
+    short:"Wenn Technologie schneller Jobs vernichtet, als neue entstehen.",
+    def:"Technologische Arbeitslosigkeit entsteht, wenn KI und Roboter Berufe so schnell ersetzen, dass die Gesellschaft und das Bildungssystem nicht schnell genug umschulen können. Ökonomen streiten darüber, ob dies diesmal anders ist als frühere technologische Revolutionen.",
+    example:"🚚 Selbstfahrende LKW könnten in den nächsten 10 Jahren Millionen Fernfahrerstellen ersetzen. Können diese Menschen schnell genug neue Berufe erlernen? Das ist die Kernfrage technologischer Arbeitslosigkeit." },
+
+  { id:94, de:"KI-Winter",                      en:"AI Winter",               cat:"Grundlagen",
+    short:"Eine Phase, in der KI-Forschung wenig Fortschritte macht und das Interesse nachlässt.",
+    def:"Als KI-Winter bezeichnet man Phasen in der Geschichte der KI, in denen Erwartungen enttäuscht wurden, Fördergelder ausblieben und das öffentliche Interesse stark abnahm. Es gab zwei große KI-Winter (1970er und 1980/90er Jahre). Heute fragen manche: Kommt ein dritter?",
+    example:"❄️ In den 1980er Jahren versprachen Forscher: 'KI wird bald alles können.' Als das nicht eintrat, kürzten Regierungen und Firmen die Gelder drastisch. Projekte wurden eingestellt – das war der zweite KI-Winter." },
+
+  { id:95, de:"Mooresches Gesetz",              en:"Moore's Law",              cat:"Grundlagen",
+    short:"Die Beobachtung, dass Computerchips alle zwei Jahre doppelt so leistungsstark werden.",
+    def:"Gordon Moore beobachtete 1965, dass sich die Anzahl der Transistoren auf einem Chip ungefähr alle zwei Jahre verdoppelt – bei gleichem Preis. Das erklärte jahrzehntelang den rasanten Fortschritt der Computertechnologie. Heute nähert sich dieses Gesetz seinen physikalischen Grenzen.",
+    example:"📱 Das Smartphone in Ihrer Tasche ist tausendmal leistungsstärker als der Computer, der 1969 die Mondlandung ermöglicht hat – und kostet einen Bruchteil. Das ist das Mooresche Gesetz in Aktion." },
+
+  { id:96, de:"Human in the Loop (HITL)",       en:"Human in the Loop",       cat:"Risiken & Ethik",
+    short:"Ein Mensch prüft und genehmigt wichtige KI-Entscheidungen – die Maschine handelt nicht allein.",
+    def:"Human in the Loop bedeutet: Bei wichtigen oder riskanten Entscheidungen ist immer ein Mensch eingebunden. Die KI bereitet vor, analysiert und schlägt vor – aber ein Mensch bestätigt, korrigiert oder stoppt. So bleibt menschliche Kontrolle gewahrt, ohne auf die Vorteile der KI zu verzichten. Das Gegenteil wäre ein vollständig autonomes System ohne menschliche Prüfung.",
+    example:"✈️ Eine KI analysiert Röntgenbilder und findet einen möglichen Tumor. Sie markiert den Bereich – aber die endgültige Diagnose trifft immer ein Arzt. Die KI hilft, der Mensch entscheidet. Das ist Human in the Loop." },
+
+  { id:97, de:"Human in the Lead",              en:"Human in the Lead",       cat:"Risiken & Ethik",
+    short:"Der Mensch gibt die Richtung vor – KI ist Werkzeug, nicht Entscheider.",
+    def:"Human in the Lead geht einen Schritt weiter als 'Human in the Loop': Es ist eine grundlegende Haltung. Der Mensch definiert Ziele, Werte und Grenzen – KI führt aus, unterstützt und optimiert. Nicht die Technologie bestimmt, wohin die Reise geht, sondern der Mensch. Diese Haltung ist der Kern des Ansatzes von Peisler PeiMedia GmbH.",
+    example:"🧭 Ein Führungsteam setzt strategische Ziele für das Unternehmen. KI liefert Daten, Analysen und Optionen. Aber welcher Weg gewählt wird – das entscheiden Menschen. Die KI navigiert, der Mensch lenkt. Das ist Human in the Lead." }
+];
+
+const CAT_COLORS = {
+  "Grundlagen":             { bg:"#e8edf8", text:"#0E2169", border:"#0E2169" },
+  "Modelle & Systeme":      { bg:"#FFF2CC", text:"#7a5a00", border:"#BA8C00" },
+  "Technologien":           { bg:"#e8f5ee", text:"#1a6a3a", border:"#2e9e5e" },
+  "Anwendungen":            { bg:"#f3eef8", text:"#5a1a8a", border:"#8a4ebc" },
+  "Risiken & Ethik":        { bg:"#fdecea", text:"#8a1a1a", border:"#c0392b" },
+  "Recht & Regulierung":    { bg:"#eaf4ea", text:"#1a4a1a", border:"#3a7a3a" },
+  "Werkzeuge & Produkte":   { bg:"#FFF2CC", text:"#5a3e00", border:"#BA8C00" },
+  "BCI & Neurotechnologie": { bg:"#e8f0fb", text:"#0E2169", border:"#0E2169" },
+  "Robotik":                { bg:"#e8f4fd", text:"#005a8a", border:"#0077b6" },
+  "Autonomes Fahren":       { bg:"#f0f4e8", text:"#3a5a00", border:"#5a8a00" },
+  "Realkonflikte & Ethik":  { bg:"#fdf0e8", text:"#7a3a00", border:"#b85a00" },
+  "Barrierefreiheit & KI":  { bg:"#f0e8fd", text:"#4a007a", border:"#7a00bc" },
+};
+
+let currentView='alpha', activeAlpha='ALL', activeCat='ALL', searchQuery='';
+
+function buildAlphaBar(){
+  const bar=document.getElementById('alphaBar');
+  const letters=[...new Set(TERMS.map(t=>t.de[0].toUpperCase()))].sort();
+  bar.appendChild(makeAlphaBtn('Alle','ALL',true));
+  letters.forEach(l=>bar.appendChild(makeAlphaBtn(l,l,false)));
+}
+function makeAlphaBtn(label,val,active){
+  const b=document.createElement('button');
+  b.className='alpha-btn'+(active?' active':'');
+  b.textContent=label; b.dataset.letter=val;
+  b.onclick=()=>setAlpha(val); return b;
+}
+function setAlpha(l){
+  activeAlpha=l;
+  document.querySelectorAll('.alpha-btn').forEach(b=>b.classList.toggle('active',b.dataset.letter===l));
+  render();
+}
+function buildCatFilter(){
+  const cf=document.getElementById('catFilter');
+  const cats=[...new Set(TERMS.map(t=>t.cat))];
+  cf.appendChild(makeCatBtn('📋 Alle Kategorien','ALL',true));
+  cats.forEach(c=>cf.appendChild(makeCatBtn(c,c,false)));
+}
+function makeCatBtn(label,val,active){
+  const b=document.createElement('button');
+  b.className='cat-btn'+(active?' active':'');
+  b.textContent=label; b.dataset.cat=val;
+  b.onclick=()=>setCat(val); return b;
+}
+function setCat(c){
+  activeCat=c;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===c));
+  render();
+}
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.onclick=()=>{
+    currentView=tab.dataset.view;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('alphaBar').classList.toggle('hidden',currentView!=='alpha');
+    document.getElementById('catFilter').classList.toggle('hidden',currentView!=='cat');
+    activeAlpha='ALL'; activeCat='ALL';
+    document.querySelectorAll('.alpha-btn').forEach(b=>b.classList.toggle('active',b.dataset.letter==='ALL'));
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat==='ALL'));
+    render();
+  };
+});
+document.getElementById('search').addEventListener('input',e=>{searchQuery=e.target.value.toLowerCase();render();});
+
+function toggleCard(id){
+  const body=document.getElementById('body-'+id);
+  const btn=document.getElementById('btn-'+id);
+  const open=body.classList.toggle('open');
+  btn.classList.toggle('open',open);
+}
+
+function render(){
+  const output=document.getElementById('glossaryOutput');
+  let filtered=TERMS.filter(t=>{
+    if(searchQuery&&![t.de,t.en,t.def,t.cat,t.short].some(s=>s.toLowerCase().includes(searchQuery)))return false;
+    if(currentView==='alpha'&&activeAlpha!=='ALL'&&t.de[0].toUpperCase()!==activeAlpha)return false;
+    if(currentView==='cat'&&activeCat!=='ALL'&&t.cat!==activeCat)return false;
+    return true;
+  });
+  document.getElementById('countDisplay').textContent=filtered.length;
+  const lbl=document.getElementById('activeFilterLabel');
+  if(searchQuery) lbl.textContent=`🔍 Suche: „${searchQuery}"`;
+  else if(currentView==='alpha'&&activeAlpha!=='ALL') lbl.textContent=`Buchstabe: ${activeAlpha}`;
+  else if(currentView==='cat'&&activeCat!=='ALL') lbl.textContent=`Kategorie: ${activeCat}`;
+  else lbl.textContent='';
+
+  if(filtered.length===0){
+    output.innerHTML=`<div class="empty"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Kein Begriff gefunden</h3><p>Versuchen Sie einen anderen Suchbegriff oder setzen Sie den Filter zurück.</p></div>`;
+    return;
+  }
+  let html='';
+  if(currentView==='alpha'){
+    const groups={};
+    filtered.sort((a,b)=>a.de.localeCompare(b.de,'de'));
+    filtered.forEach(t=>{const l=t.de[0].toUpperCase();if(!groups[l])groups[l]=[];groups[l].push(t);});
+    Object.keys(groups).sort().forEach(letter=>{
+      html+=`<div class="section-header"><span class="letter">${letter}</span></div>`;
+      groups[letter].forEach(t=>html+=cardHTML(t));
+    });
+  } else {
+    const catOrder=["Grundlagen","Modelle & Systeme","Technologien","Anwendungen","Robotik","Autonomes Fahren","BCI & Neurotechnologie","Realkonflikte & Ethik","Risiken & Ethik","Barrierefreiheit & KI","Recht & Regulierung","Werkzeuge & Produkte"];
+    const groups={};
+    filtered.forEach(t=>{if(!groups[t.cat])groups[t.cat]=[];groups[t.cat].push(t);});
+    catOrder.forEach(cat=>{
+      if(!groups[cat])return;
+      const col=CAT_COLORS[cat]||{};
+      html+=`<div class="section-header" style="border-color:${col.border||'var(--gold)'}">
+        ${cat} <span class="section-count">(${groups[cat].length} Begriff${groups[cat].length!==1?'e':''})</span>
+      </div>`;
+      groups[cat].sort((a,b)=>a.de.localeCompare(b.de,'de')).forEach(t=>html+=cardHTML(t));
+    });
+  }
+  output.innerHTML=html;
+}
+
+function cardHTML(t){
+  const col=CAT_COLORS[t.cat]||{bg:'#f0f0f0',text:'#333',border:'#999'};
+  return `<div class="card">
+    <div class="card-header" onclick="toggleCard(${t.id})">
+      <div class="card-left">
+        <span class="card-title">${t.de}</span>
+        <span class="card-en">${t.en}</span>
+        <span class="cat-tag" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}33">${t.cat}</span>
+      </div>
+      <button class="toggle-btn" id="btn-${t.id}" aria-label="Aufklappen">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="card-preview">${t.short}</div>
+    <div class="card-body" id="body-${t.id}">
+      <div class="def-block">
+        <div class="def-label">📖 Erklärung</div>
+        <div class="def-text">${t.def}</div>
+      </div>
+      <div class="example-box">
+        <div class="def-label">💡 Alltagsbeispiel</div>
+        <div class="def-text">${t.example}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+buildAlphaBar();
+buildCatFilter();
+render();
+</script>
+</body>
+</html>
